@@ -20,6 +20,7 @@ const IncludeContainer = ({ html = '', type }) => {
   const createAppendScriptTag = (code, src) => {
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
+      script.classList.add('include');
       if (src) {
         script.src = src;
         // eslint-disable-next-line func-names
@@ -65,6 +66,12 @@ const IncludeContainer = ({ html = '', type }) => {
     if (isInitialMount.current) {
       placeScriptsOneAfterTheOther();
     }
+    return () => {
+      const includeScripts = document.querySelectorAll('script.include');
+      includeScripts.forEach((script) => {
+        script.parentNode.removeChild(script);
+      });
+    };
   }, [html, type, scriptTagRegExp]);
 
   if (shouldNotRenderInclude) {
